@@ -11,31 +11,31 @@ var mlog = require("mlog.js")
  * @param i3
  * @param i4
  */
-function info(i1,i2,i3,i4) {
+function info(i1, i2, i3, i4) {
     try {
         if (mlog.info != null) {
             mlog.info("mfile", i1, i2, i3, i4)
         } else {
-            console.info("mfile",i1,i2,i3,i4)
-            mlog.static_showToast("mfile:"+mlog.static_getMsg(i1,i2,i3,i4))
+            console.info("mfile", i1, i2, i3, i4)
+            mlog.static_showToast("mfile:" + mlog.static_getMsg(i1, i2, i3, i4))
         }
     } catch (e) {
-        console.error("mfile",e)
-        mlog.static_showModal("mfile:"+mlog.static_getMsg(e))
+        console.error("mfile", e)
+        mlog.static_showModal("mfile:" + mlog.static_getMsg(e))
     }
 }
 
-function err(e1, e2, e3,e4) {
+function err(e1, e2, e3, e4) {
     try {
         if (mlog.err != null) {
-            mlog.err("mfile", e1,e2,e3,e4)
+            mlog.err("mfile", e1, e2, e3, e4)
         } else {
-            console.error("mfile",e1, e2, e3,e4)
-            mlog.static_showModal("mfile:"+mlog.static_getMsg(e1, e2, e3,e4))
+            console.error("mfile", e1, e2, e3, e4)
+            mlog.static_showModal("mfile:" + mlog.static_getMsg(e1, e2, e3, e4))
         }
     } catch (e) {
-        console.error("mfile",e)
-        mlog.static_showModal("mfile:"+mlog.static_getMsg(e))
+        console.error("mfile", e)
+        mlog.static_showModal("mfile:" + mlog.static_getMsg(e))
     }
 }
 
@@ -57,7 +57,7 @@ module.exports.static_init = (c_mlog) => {
  */
 function readDir(dirPath) {
     try {
-        dirPath=checkAbsolutePath(dirPath)
+        dirPath = checkAbsolutePath(dirPath)
         info("read dir", dirPath)
         return isDir(dirPath) ? FSM.readdirSync(dirPath) : []//[p1,p2]
     } catch (e) {
@@ -74,7 +74,7 @@ function readDir(dirPath) {
  */
 function readFile(filePath, encoding) {
     try {
-        filePath=checkAbsolutePath(filePath)
+        filePath = checkAbsolutePath(filePath)
         info("read file", filePath)
         return FSM.readFileSync(filePath, encoding != null ? encoding : "UTF-8")
     } catch (e) {
@@ -94,13 +94,13 @@ function readFile(filePath, encoding) {
 function writeFile(filePath, conter, isAppend, encoding) {
     try {
         //init path
-        filePath=checkWritPath(filePath)
+        filePath = checkWritPath(filePath)
         //encode
         encoding = (encoding != null ? encoding : "utf8")
         //append
         const code = (isAppend && isExist(filePath) ? FSM.appendFileSync(filePath, conter, encoding) == null
             //cover
-            : FSM.writeFileSync(filePath,conter, encoding) == null)
+            : FSM.writeFileSync(filePath, conter, encoding) == null)
 
         info((isAppend ? "append" : "write") + " " + filePath, encoding, code)
 
@@ -113,20 +113,20 @@ function writeFile(filePath, conter, isAppend, encoding) {
 
 function writeLog(title, body) {
     // try {
-        const tdate = new Date().toJSON()
-        const filePath=checkAbsolutePath("mlog/" + tdate.split("T")[0] + ".mlog",true)
-        //check parent path
-        const ppath = filePath.substr(0, filePath.lastIndexOf("/"))
-        if(!isDir(ppath)){
-            FSM.mkdirSync(ppath, true)
-        }
+    const tdate = new Date().toJSON()
+    const filePath = checkAbsolutePath("mlog/" + tdate.split("T")[0] + ".mlog", true)
+    //check parent path
+    const ppath = filePath.substr(0, filePath.lastIndexOf("/"))
+    if (!isDir(ppath)) {
+        FSM.mkdirSync(ppath, true)
+    }
 
-        const logmsg=tdate + " " + title + ":\r\n" + body + "\r\n"
-        if(isExist(filePath,true) ){
-            FSM.appendFileSync(filePath,logmsg, "utf-8")
-        }else{
-            FSM.writeFileSync(filePath,logmsg,"utf-8")
-        }
+    const logmsg = tdate + " " + title + ":\r\n" + body + "\r\n"
+    if (isExist(filePath, true)) {
+        FSM.appendFileSync(filePath, logmsg, "utf-8")
+    } else {
+        FSM.writeFileSync(filePath, logmsg, "utf-8")
+    }
 
     // } catch (e) {
     //     err("write file is err", e)
@@ -147,7 +147,7 @@ function writeLog(title, body) {
  */
 function getFInfo(path) {
     try {
-        path=checkAbsolutePath(path)
+        path = checkAbsolutePath(path)
         if (isExist(path)) {
             return FSM.statSync(path, false)
         } else {
@@ -159,12 +159,12 @@ function getFInfo(path) {
     }
 }
 
-function isExist(path,isLog) {
+function isExist(path, isLog) {
     try {
-        path=checkAbsolutePath(path)
+        path = checkAbsolutePath(path)
         return typeof path == "string" && FSM.accessSync(path) == null
     } catch (e) {
-        if(!isLog){
+        if (!isLog) {
             if (e.message.indexOf("no such file or directory") >= 0) {
                 info(path, e.message)
             } else {
@@ -177,7 +177,7 @@ function isExist(path,isLog) {
 
 function isDir(path) {
     try {
-        path=checkAbsolutePath(path)
+        path = checkAbsolutePath(path)
         const pinfo = getFInfo(path)
         return pinfo != null && pinfo.isDirectory()
     } catch (e) {
@@ -188,7 +188,7 @@ function isDir(path) {
 
 function removePath(path) {
     try {
-        path=checkAbsolutePath(path)
+        path = checkAbsolutePath(path)
         const pinfo = getFInfo(path)
         if (pinfo != null) {
             if (pinfo.isDirectory()) {
@@ -209,7 +209,7 @@ function removePath(path) {
 
 function mkDir(dirPath) {
     try {
-        dirPath=checkAbsolutePath(dirPath)
+        dirPath = checkAbsolutePath(dirPath)
         const dinfo = getFInfo(dirPath)
         if (dinfo != null) {
             if (dinfo.isFile()) {
@@ -231,7 +231,7 @@ function mkDir(dirPath) {
 
 function copyFile(srcFPath, dstFPath) {
     try {
-        srcFPath=checkAbsolutePath(srcFPath)
+        srcFPath = checkAbsolutePath(srcFPath)
         const srcFileInfo = getFInfo(srcFPath)
         //check src file is find
         if (srcFileInfo != null && srcFileInfo.isFile()) {
@@ -239,17 +239,17 @@ function copyFile(srcFPath, dstFPath) {
                 dstFPath = dstFPath.substr(0, dstFPath.length - 1)
             }
             //check dst path
-            dstFPath=checkWritPath(dstFPath)
+            dstFPath = checkWritPath(dstFPath)
             const dstFileInfo = getFInfo(dstFPath)
-            if (dstFileInfo != null&&dstFileInfo.isDirectory()) {
+            if (dstFileInfo != null && dstFileInfo.isDirectory()) {
                 err("dst path is dir", dstFPath)
                 return false
             }
             //copy file
             const code = FSM.copyFileSync(srcFPath, dstFPath) == null
             info("copy file " + srcFPath, dstFPath, code)
-            if(!code){
-                err("copy file is fail",srcFPath,dstFPath)
+            if (!code) {
+                err("copy file is fail", srcFPath, dstFPath)
             }
             return code
         } else {
@@ -267,10 +267,10 @@ function copyFile(srcFPath, dstFPath) {
  * @param srcPath wxfile://usr/tmp/dgg3efh573hj73js5sc5/
  * @param dstPath wxfile://usr/languageget/
  */
-function copyDir(srcPath, dstPath,upProgressEvent) {
-    try{
-        srcPath=checkAbsolutePath(srcPath)
-        dstPath=checkWritPath(dstPath)
+function copyDir(srcPath, dstPath, upProgressEvent) {
+    try {
+        srcPath = checkAbsolutePath(srcPath)
+        dstPath = checkWritPath(dstPath)
         // check dst path
         if (!dstPath.endsWith("/")) {
             dstPath += "/"
@@ -285,21 +285,21 @@ function copyDir(srcPath, dstPath,upProgressEvent) {
                 }
                 const pName = srcPath.split("/").reverse()[1]
                 const cNameArr = readDir(srcPath)
-                return cNameArr.map((cname,i) =>{
+                return cNameArr.map((cname, i) => {
                     //up progress
-                    if(typeof upProgressEvent=="function"){
-                        upProgressEvent(cNameArr.length,i)
+                    if (typeof upProgressEvent == "function") {
+                        upProgressEvent(cNameArr.length, i)
                     }
-                    return copyDir(srcPath + cname, dstPath + pName,upProgressEvent)
+                    return copyDir(srcPath + cname, dstPath + pName, upProgressEvent)
                 }).filter(code => code).length == cNameArr.length
-            } else{
+            } else {
                 return copyFile(srcPath, dstPath + srcPath.split("/").reverse()[0])
             }
         } else {
-            err("not find src path",srcPath)
+            err("not find src path", srcPath)
             return false
         }
-    }catch (e){
+    } catch (e) {
         err(e)
         return false
     }
@@ -321,26 +321,26 @@ function downUrlFileSync(url, localPath, callback, isShowLoading) {
         removePath(localPath)
         wx.downloadFile({
             url: url,
-            complete(a,b) {
-               try{
-                   var code = a.errMsg.endsWith(":ok")
-                   if (!code) {
-                       err(a.errMsg)
-                   }
-                   if (isShowLoading) {
-                       wx.hideLoading()
-                   }
-               }catch (e){
-                   err(e)
-               }
+            complete(a, b) {
+                try {
+                    var code = a.errMsg.endsWith(":ok")
+                    if (!code) {
+                        err(a.errMsg)
+                    }
+                    if (isShowLoading) {
+                        wx.hideLoading()
+                    }
+                } catch (e) {
+                    err(e)
+                }
             },
             success(res) {
                 //res:{statusCode,tempFilePath}
                 const code = res.statusCode === 200
                 if (code) {
                     //copy cache to local
-                    localPath=checkWritPath(localPath)
-                    info("download url file is "+code, url, res)
+                    localPath = checkWritPath(localPath)
+                    info("download url file is " + code, url, res)
                     mcallback(copyFile(res.tempFilePath, localPath))
                 } else {
                     err("download url file to cache is err.", url)
@@ -364,8 +364,8 @@ function unzipSync(zipPath, dstPath, callback, isShowLoading) {
         }
     }
     try {
-        zipPath=checkAbsolutePath(zipPath)
-        dstPath=checkWritPath(dstPath)
+        zipPath = checkAbsolutePath(zipPath)
+        dstPath = checkWritPath(dstPath)
         if (isShowLoading) {
             wx.showLoading({
                 title: '解压...',
@@ -395,7 +395,7 @@ function unzipSync(zipPath, dstPath, callback, isShowLoading) {
         FSM.unzip({
             zipFilePath: zipPath,
             targetPath: dstPath,
-            complete(a,b) {
+            complete(a, b) {
                 if (isShowLoading) {
                     wx.hideLoading()
                 }
@@ -410,25 +410,26 @@ function unzipSync(zipPath, dstPath, callback, isShowLoading) {
     }
 }
 
-function checkWritPath(path){
-    try{
-        if(typeof path=="string"){
+function checkWritPath(path) {
+    try {
+        if (typeof path == "string") {
             //check is absolute path
-            path=checkAbsolutePath(path)
+            path = checkAbsolutePath(path)
             //check parent path
             const ppath = path.substr(0, path.lastIndexOf("/"))
             if (isDir(ppath) == false) {
                 mkDir(ppath)
             }
             return path
-        }else return null
-    }catch (e){
+        } else return null
+    } catch (e) {
         err(e)
         return null
     }
 }
-function checkAbsolutePath(path){
-    return (path.startsWith(USER_DIR)?"":USER_DIR + "/")+path
+
+function checkAbsolutePath(path) {
+    return (path.startsWith(USER_DIR) ? "" : USER_DIR + "/") + path
 }
 
 // ------------------open event----------------------

@@ -1,13 +1,14 @@
 <!--index.wxml-->
 <view class="container">
-  <editor class="c-editor" id="i-editor"></editor>
-  <button bindtap="f_button">{{button.text}}</button>
-  <view class="c-tree">
-    <view class="c-absolute">absolute:{{absolutePath}}</view>
-    <view class="c-dirs">
-      <view class="c-d-child" wx:for="{{childArr}}"
-            catchtap="clickChild" data-event1-data1="{{item.eventData}}"
-            catchlongpress="removeChild">{{item.text}}</view>
+    <editor class="c-editor" id="i-editor"></editor>
+    <button bindtap="f_button">{{button.text}}</button>
+    <view class="c-tree">
+        <view class="c-absolute">absolute:{{absolutePath}}</view>
+        <view class="c-dirs">
+            <view class="c-d-child" wx:for="{{childArr}}"
+                  catchtap="clickChild" data-event1-data1="{{item.eventData}}"
+                  catchlongpress="removeChild">{{item.text}}
+            </view>
+        </view>
     </view>
-  </view>
 </view>
