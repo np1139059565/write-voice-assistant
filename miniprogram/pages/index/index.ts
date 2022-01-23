@@ -65,6 +65,7 @@ Page({
             console.error(e)
         }
     },
+
     refushDir: function () {
         try {
             this.data.childArr = app.globalData.c_mfile.static_readDir(this.data.absolutePath).map(childName => {
@@ -85,11 +86,13 @@ Page({
             app.globalData.c_mlog.err(e1)
         }
     },
-    editFile: function () {
+    editFile: function (childName) {
         try {
-            const ftext = app.globalData.c_mfile.static_readFile(this.data.absolutePath + this.data.editFileName)
             this.data.editor.ctx.clear()
-            this.data.editor.ctx.insertText({text:ftext})
+            this.data.editor.ctx.insertText({text:app.globalData.c_mfile.static_readFile(this.data.absolutePath + this.data.editFileName)})
+
+            this.data.editFileName = childName
+            this.setData(this.data)
         } catch (e1) {
             app.globalData.c_mlog.err(e1)
         }
@@ -102,19 +105,20 @@ Page({
                     this.data.editor.ctx.getContents({
                         success:res=>{
                             const wcode = app.globalData.c_mfile.static_writeFile(editFilePath, res.text)
+                            if(wcode){
+                                this.data.editFileName = null
+                                this.setData(this.data)
+                                this.data.editor.ctx.clear()
+                            }
                             app.globalData.c_mlog.static_showModal("保存文件结果：" + wcode)
                         }
                     })
-
-                }, () => {
-                    //刷新文件内容
-                    // this.editFile()
-                })
+                }, () => {})
             } else {
                 //not find;clear
                 this.data.editFileName = null
-                this.data.editor.ctx.clear()
                 this.setData(this.data)
+                this.data.editor.ctx.clear()
             }
         } catch (e1) {
             app.globalData.c_mlog.err(e1)
@@ -155,9 +159,7 @@ Page({
                         } else {
                             // open file
                             const callback = () => {
-                                this.data.editFileName = childName
-                                this.setData(this.data)
-                                this.editFile()
+                                this.editFile(childName)
                             }
                             if (stat.size > 1024) {
                                 app.globalData.c_mlog.static_showModal("文件过大，任然打开?", callback, () => {
