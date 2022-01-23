@@ -35,7 +35,7 @@ function info(i1, i2, i3, i4, i5) {
 
 function err(e1, e2, e3, e4, e5) {
     mfile.static_writeLog("mlog err", getMsg(e1, e2, e3, e4, e5))
-    showModal("mlog err:", getMsg(e1, e2, e3, e4, e5))
+    showModal("mlog err:"+getMsg(e1, e2, e3, e4, e5))
     console.error("mlog err", getMsg(e1, e2, e3, e4, e5))
 }
 
@@ -67,11 +67,10 @@ function showToast(title, icon, duration) {
     })
 }
 
-function showModal(title, content, ocallback, ccallback) {
+function showModal( content, ocallback, ccallback) {
     try{
         //ok,cancel
         wx.showModal({
-            // title: conter,//titile 无换行
             content: content,
             showCancel: typeof ccallback == "function",
             confirmText: "确认",
