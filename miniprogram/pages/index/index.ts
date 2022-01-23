@@ -139,7 +139,7 @@ Page({
             switch (childName) {
                 case "..":
                     // back wxfile://usr/
-                    if (this.data.absolutePath!=app.globalData.c_mfile.static_getUserDir("write-voice-assistant")) {
+                    if (true) {
                         const absoluteArr = this.data.absolutePath.split("/").filter((child, i) => i == 1 || child != "")
                         this.data.absolutePath = absoluteArr.splice(0, absoluteArr.length - 1).join("/") + "/"
                         this.setData(this.data)
