@@ -90,6 +90,13 @@ function showModal(title, content, ocallback, ccallback) {
                 } catch (e) {
                     err(e)
                 }
+            },
+            fail:(res,a,b)=>{
+                try{
+                    console.info(res,a,b)
+                }catch (e){
+                    err(e)
+                }
             }
         })
     }catch (e){
