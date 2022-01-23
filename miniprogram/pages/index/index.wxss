@@ -36,5 +36,5 @@ page, view, editor, button {
     overflow: auto;
 }
 .c-d-child{
-    height: 8vh;
+    height: 5vh;
 }

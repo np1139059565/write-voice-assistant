@@ -43,12 +43,12 @@ Page({
             this.data.absolutePath = app.globalData.c_mfile.static_getUserDir("write-voice-assistant")
             app.globalData.c_mlog.info("absolutePath", this.data.absolutePath)
             this.setData(this.data)
-            this.refushDir()
+            this.refushTree()
         } catch (e) {
             console.error(e)
         }
     },
-    f_button() {
+    f_voice_start() {
         try {
             if (this.data.button.text.toUpperCase() == "START") {
                 this.data.button.text = "stop"
@@ -66,7 +66,7 @@ Page({
         }
     },
 
-    refushDir: function () {
+    refushTree: function () {
         try {
             this.data.childArr = app.globalData.c_mfile.static_readDir(this.data.absolutePath).map(childName => {
                 var childInfo = "permission"
@@ -86,12 +86,12 @@ Page({
             app.globalData.c_mlog.err(e1)
         }
     },
-    editFile: function (childName) {
+    openFile: function (fileName) {
         try {
             this.data.editor.ctx.clear()
-            this.data.editor.ctx.insertText({text:app.globalData.c_mfile.static_readFile(this.data.absolutePath + childName)})
+            this.data.editor.ctx.insertText({text:app.globalData.c_mfile.static_readFile(this.data.absolutePath + fileName)})
 
-            this.data.editFileName = childName
+            this.data.editFileName = fileName
             this.setData(this.data)
         } catch (e1) {
             app.globalData.c_mlog.err(e1)
@@ -138,7 +138,7 @@ Page({
                         const absoluteArr = this.data.absolutePath.split("/").filter((child, i) => i == 1 || child != "")
                         this.data.absolutePath = absoluteArr.splice(0, absoluteArr.length - 1).join("/") + "/"
                         this.setData(this.data)
-                        this.refushDir()
+                        this.refushTree()
                     } else {
                         app.globalData.c_mlog.err("is root dir:" + this.data.absolutePath)
                     }
@@ -151,7 +151,7 @@ Page({
                         // open dir
                         this.data.absolutePath = childPath + "/"
                         this.setData(this.data)
-                        this.refushDir()
+                        this.refushTree()
                     } else if (stat.isFile()) {
                         //save file
                         if (childName == this.data.editFileName) {
@@ -159,7 +159,7 @@ Page({
                         } else {
                             // open file
                             const callback = () => {
-                                this.editFile(childName)
+                                this.openFile(childName)
                             }
                             if (stat.size > 1024) {
                                 app.globalData.c_mlog.static_showModal("文件过大，任然打开?", callback, () => {
@@ -178,7 +178,7 @@ Page({
             const fPath = this.data.absolutePath + e.currentTarget.dataset.event1Data1
             app.globalData.c_mlog.static_showModal("确定删除 " + fPath + "?", () => {
                 if (app.globalData.c_mfile.static_rmPath(fPath)) {
-                    this.refushDir()
+                    this.refushTree()
                 }
             }, () => {
             })

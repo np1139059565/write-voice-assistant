@@ -1,7 +1,7 @@
 <!--index.wxml-->
 <view class="container">
     <editor class="c-editor" id="i-editor"></editor>
-    <button bindtap="f_button">{{button.text}}</button>
+    <button bindtap="f_voice_start">{{button.text}}</button>
     <view class="c-tree">
         <view class="c-absolute">absolute:{{absolutePath}}</view>
         <view class="c-dirs">
