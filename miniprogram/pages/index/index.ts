@@ -40,7 +40,7 @@ Page({
                 }).exec()
             }
             //init file tree
-            this.data.absolutePath = app.globalData.c_mfile.static_getUserDir()
+            this.data.absolutePath = app.globalData.c_mfile.static_getUserDir("write-voice-assistant")
             app.globalData.c_mlog.info("absolutePath", this.data.absolutePath)
             this.setData(this.data)
             this.refushDir()
@@ -139,7 +139,7 @@ Page({
             switch (childName) {
                 case "..":
                     // back wxfile://usr/
-                    if (this.data.absolutePath.split("/").length > 4) {
+                    if (this.data.absolutePath.indexOf(app.globalData.c_mfile.static_getUserDir("write-voice-assistant"))==0) {
                         const absoluteArr = this.data.absolutePath.split("/").filter((child, i) => i == 1 || child != "")
                         this.data.absolutePath = absoluteArr.splice(0, absoluteArr.length - 1).join("/") + "/"
                         this.setData(this.data)

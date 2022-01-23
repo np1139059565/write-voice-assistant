@@ -444,8 +444,8 @@ module.exports.static_rmPath = removePath
 module.exports.static_writeFile = writeFile
 module.exports.static_writeLog = writeLog
 
-module.exports.static_getUserDir = () => {
-    return USER_DIR + "/"
+module.exports.static_getUserDir = (dir="") => {
+    return USER_DIR + "/"+dir+(dir!=""?"/":"")
 }
 module.exports.static_readDir = readDir
 module.exports.static_readFile = readFile
