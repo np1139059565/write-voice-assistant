@@ -1,0 +1,7 @@
+<!--index.wxml-->
+<view class="container">
+  <editor class="c-editor" id="i-editor"></editor>
+  <button bindtap="f_button">{{button.text}}</button>
+  <view class="c-tree">
+  </view>
+</view>

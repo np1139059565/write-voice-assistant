@@ -1,0 +1,25 @@
+page,view,editor,button{
+  padding: 0;
+  margin: 0;
+}
+.container{
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+.c-editor{
+  height: 50vh;
+  width: calc(100% - 4px);
+  margin: 2px;
+  border: 1px solid;
+}
+
+.c-button{
+  height: 10vh;
+}
+
+.c-tree{
+  height: 40vh;
+}
