@@ -23,3 +23,12 @@ page,view,editor,button{
 .c-tree{
   height: 40vh;
 }
+.c-absolute{
+  width: 100%;
+  overflow: auto;
+}
+.c-dirs{
+  width:100%;
+  height: 30vh;
+  overflow: auto;
+}
