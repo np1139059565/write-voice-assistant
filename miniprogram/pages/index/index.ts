@@ -89,7 +89,7 @@ Page({
     editFile: function (childName) {
         try {
             this.data.editor.ctx.clear()
-            this.data.editor.ctx.insertText({text:app.globalData.c_mfile.static_readFile(this.data.absolutePath + this.data.editFileName)})
+            this.data.editor.ctx.insertText({text:app.globalData.c_mfile.static_readFile(this.data.absolutePath + childName)})
 
             this.data.editFileName = childName
             this.setData(this.data)
