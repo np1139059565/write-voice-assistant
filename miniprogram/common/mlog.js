@@ -93,7 +93,7 @@ function showModal(title, content, ocallback, ccallback) {
             },
             fail:(res,a,b)=>{
                 try{
-                    console.info(res,a,b)
+                    showToast(res.errMsg)
                 }catch (e){
                     err(e)
                 }
