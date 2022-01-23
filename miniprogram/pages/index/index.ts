@@ -40,7 +40,7 @@ Page({
                 }).exec()
             }
             //init file tree
-            this.data.absolutePath = app.data.c_mfile.static_getUserDir()
+            this.data.absolutePath = app.globalData.c_mfile.static_getUserDir()
             app.globalData.c_mlog.info("absolutePath", this.data.absolutePath)
             this.setData(this.data)
             this.refushDir()
