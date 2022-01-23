@@ -88,20 +88,8 @@ Page({
     editFile: function () {
         try {
             const ftext = app.globalData.c_mfile.static_readFile(this.data.absolutePath + this.data.editFileName)
-            if (this.data.editorCtx != null) {
-                this.data.editorCtx.setContents({
-                    html: ftext
-                });
-            } else {
-                wx.createSelectorQuery().select("#i-edit").context((res) => {
-                    //这里使用function会没办法使用this
-                    res.context.setContents({
-                        html: ftext
-                    })
-                    this.data.editorCtx = res.context
-                    this.setData(this.data)
-                }).exec()
-            }
+            this.data.editor.ctx.clear()
+            this.data.editor.ctx.insertText({text:ftext})
         } catch (e1) {
             app.globalData.c_mlog.err(e1)
         }
@@ -111,8 +99,13 @@ Page({
             const editFilePath = this.data.absolutePath + this.data.editFileName
             if (app.globalData.c_mfile.static_isExist(editFilePath)) {
                 app.globalData.c_mlog.static_showModal("保存?",() => {
-                    const wcode = app.globalData.c_mfile.static_writeFile(editFilePath, this.data.editConter.replaceAll(" ", " "))
-                    app.globalData.c_mlog.static_showModal("保存文件结果：" + wcode)
+                    this.data.editor.ctx.getContents({
+                        success:res=>{
+                            const wcode = app.globalData.c_mfile.static_writeFile(editFilePath, res.text)
+                            app.globalData.c_mlog.static_showModal("保存文件结果：" + wcode)
+                        }
+                    })
+
                 }, () => {
                     //刷新文件内容
                     // this.editFile()
@@ -120,9 +113,7 @@ Page({
             } else {
                 //not find;clear
                 this.data.editFileName = null
-                this.data.editorCtx.setContents({
-                    html: ""
-                })
+                this.data.editor.ctx.clear()
                 this.setData(this.data)
             }
         } catch (e1) {
