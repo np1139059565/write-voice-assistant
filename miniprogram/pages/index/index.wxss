@@ -35,3 +35,6 @@ page, view, editor, button {
     height: 30vh;
     overflow: auto;
 }
+.c-d-child{
+    height: 8vh;
+}
