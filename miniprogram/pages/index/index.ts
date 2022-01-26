@@ -39,7 +39,7 @@ Page({
             }
             app.globalData.rr_manager.onError = (res) => {
                 app.globalData.c_mlog.f_err("err...", res)
-                this.f_click_tts(false)
+                this.f_click_tts(null,false)
             }
             //init editor
             if (this.data.editor.ctx == null) {
@@ -54,7 +54,7 @@ Page({
             app.globalData.c_mlog.f_err(e)
         }
     },
-    f_click_tts(isStop=false) {
+    f_click_tts(e,isStop=false) {
         try {
             if (false==isStop&&this.data.tts.text.toUpperCase() == "START") {
                 app.globalData.c_mlog.f_info("start...")
@@ -68,8 +68,8 @@ Page({
                 this.setData(this.data)
                 app.globalData.rr_manager.stop()
             }
-        } catch (e) {
-            app.globalData.c_mlog.f_err(e)
+        } catch (e1) {
+            app.globalData.c_mlog.f_err(e1)
         }
     },
 
