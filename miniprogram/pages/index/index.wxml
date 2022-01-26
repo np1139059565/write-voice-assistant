@@ -6,7 +6,7 @@
     <button bindtap="f_click_tts" style="{{tts.style}}">{{tts.text}}</button>
     <!--    tree-->
     <view class="c-tree">
-        <view class="c-absolute">absolute:{{tree.path}}</view>
+        <view class="c-absolute" catchlongpress="f_edit_to_new_file">absolute:{{tree.path}}</view>
         <view class="c-childs">
             <view class="c-child" wx:for="{{tree.child_arr}}"
                   catchtap="f_next" data-event1-data1="{{item.evData}}"

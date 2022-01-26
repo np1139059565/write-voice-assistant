@@ -235,5 +235,29 @@ Page({
         } catch (e1) {
             app.globalData.c_mlog.f_err(e1)
         }
+    },
+    f_edit_to_new_file:function (e){
+        try{
+            this.data.editor.ctx.getContents({
+                success:res=>{
+                    try{
+                        const fileName=res.text.split("\r\n")[0]
+                        app.globalData.c_mlog.f_wx_static_show_modal("create new file:"+fileName+"?",()=>{
+                            try{
+                                app.globalData.c_mlog.f_wx_static_show_toast("保存结果："
+                                    + app.globalData.wx_file.f_static_writeFile(this.data.tree.path+fileName, res.text))
+                                this.f_refush_child()
+                            }catch (e1){
+                                app.globalData.c_mlog.f_err(e1)
+                            }
+                        },()=>{})
+                    }catch (e1){
+                        app.globalData.c_mlog.f_err(e1)
+                    }
+                }
+            })
+        }catch (e1) {
+            app.globalData.c_mlog.f_err(e1)
+        }
     }
 })
