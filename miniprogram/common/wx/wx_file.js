@@ -208,7 +208,9 @@ function writeLog(title, body) {
         } else {
             //check parent path
             const ppath = filePath.substr(0, filePath.lastIndexOf("/"))
-            FSM.mkdirSync(ppath, true)
+            if(false==f_is_exist(ppath,true)){
+                FSM.mkdirSync(ppath, true)
+            }
             FSM.writeFileSync(filePath, logmsg, "utf-8")
         }
     } catch (e) {
