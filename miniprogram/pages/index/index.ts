@@ -13,7 +13,8 @@ Page({
             child_arr:[]//[{text,evData}]
         },
         tts: {
-            text: "start"
+            text: "start",
+            style:"background:green"
         }
     },
     onLoad:function() {
@@ -62,11 +63,13 @@ Page({
             if (false==isStop&&this.data.tts.text.toUpperCase() == "START") {
                 app.globalData.c_mlog.f_info("start...")
                 this.data.tts.text = "stop"
+                this.data.tts.style=""
                 this.setData(this.data)
                 app.globalData.rr_manager.start({lang: "zh_CN", duration: 3000})
             } else {
                 app.globalData.c_mlog.f_info("stop...")
                 this.data.tts.text = "start"
+                this.data.tts.style="background:green"
                 this.setData(this.data)
                 app.globalData.rr_manager.stop()
             }
