@@ -1,13 +1,16 @@
 <!--index.wxml-->
 <view class="container">
+    <!--    editor-->
     <editor class="c-editor" id="i-editor"></editor>
-    <button bindtap="f_voice_start">{{button.text}}</button>
+    <!--    tts-->
+    <button bindtap="f_click_tts" style="{{tts.text.toUpperCase()!='START'?'background:green':''}}">{{tts.text}}</button>
+    <!--    tree-->
     <view class="c-tree">
-        <view class="c-absolute">absolute:{{absolutePath}}</view>
-        <view class="c-dirs">
-            <view class="c-d-child" wx:for="{{childArr}}"
-                  catchtap="clickChild" data-event1-data1="{{item.eventData}}"
-                  catchlongpress="removeChild">{{item.text}}
+        <view class="c-absolute">absolute:{{tree.path}}</view>
+        <view class="c-childs">
+            <view class="c-child" wx:for="{{tree.child_arr}}"
+                  catchtap="f_next" data-event1-data1="{{item.evData}}"
+                  catchlongpress="f_show_menus">{{item.text}}
             </view>
         </view>
     </view>

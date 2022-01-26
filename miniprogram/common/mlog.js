@@ -1,45 +1,55 @@
-const mfile = require("mfile.js")
-
-const LOG_TYPES={
+const mfile = require("wx/wx_file.js"),LOG_TYPES={
     DEBUG:"DEBUG",
-        INFO:"INFO"
-}
+    INFO:"INFO"
+},MLOG_TITLE="mlog"
+
 var logType=LOG_TYPES.DEBUG
 
-module.exports.static_init = function (c_mfile,s_logType) {
+module.exports.f_static_init = function (s_logType) {
     try {
-        info("init log...")
-        // switch (s_logType.toUpperCase()){
-        //     case LOG_TYPES.DEBUG:
-        //         logType=LOG_TYPES.DEBUG;
-        //         break;
-        //     default:
-        //         logType=LOG_TYPES.INFO;
-        //         break;
-        // }
-        info("switch mlog type",logType)
-        module.exports.info = info
-        module.exports.err = err
+        f_info("init log...")
+        switch (s_logType.toUpperCase()){
+            case LOG_TYPES.DEBUG:
+                logType=LOG_TYPES.DEBUG;
+                break;
+            default:
+                logType=LOG_TYPES.INFO;
+                break;
+        }
+        f_info("switch mlog type",logType)
+        module.exports.f_info = f_info
+        module.exports.f_err = f_err
     } catch (e) {
-        err(e)
+        f_err(e)
     }
 }
+module.exports.f_static_get_msg=f_get_msg
 
-function info(i1, i2, i3, i4, i5) {
-    mfile.static_writeLog("mlog info", getMsg(i1, i2, i3, i4, i5))
+module.exports.f_wx_static_show_toast=f_wx_show_toast
+module.exports.f_wx_static_show_modal=f_wx_show_modal
+module.exports.f_wx_static_show_sheet=f_wx_show_sheet
+
+function f_info(title=null, i2, i3, i4, i5) {
+    if(title==null){
+        title=MLOG_TITLE
+    }
+    mfile.f_static_writeLog(title, f_get_msg(i2, i3, i4, i5))
     if(logType==LOG_TYPES.DEBUG){
-        showToast(getMsg(i1, i2, i3, i4, i5))
+        f_wx_show_toast(title+f_get_msg( i2, i3, i4, i5))
     }
-    console.info("mlog info", getMsg(i1, i2, i3, i4, i5))
+    console.info(title, f_get_msg(i1, i2, i3, i4, i5))
 }
 
-function err(e1, e2, e3, e4, e5) {
-    mfile.static_writeLog("mlog err", getMsg(e1, e2, e3, e4, e5))
-    showModal("mlog err:"+getMsg(e1, e2, e3, e4, e5))
-    console.error("mlog err", getMsg(e1, e2, e3, e4, e5))
+function f_err(title, e2, e3, e4, e5) {
+    if(title==null){
+        title=MLOG_TITLE
+    }
+    mfile.f_static_writeLog(title, f_get_msg(e1, e2, e3, e4, e5))
+    f_wx_show_modal(title+f_get_msg( e2, e3, e4, e5))
+    console.error(title, f_get_msg(e1, e2, e3, e4, e5))
 }
 
-function getStr(e) {
+function f_tostr(e) {
     try {
         if (e == null) {
             return ""
@@ -55,11 +65,11 @@ function getStr(e) {
     }
 }
 
-function getMsg(e1, e2, e3, e4, e5) {
-    return (getStr(e1) + "," + getStr(e2) + "," + getStr(e3) + "," + getStr(e4) + "," + getStr(e5)).replaceAll(/,,/g, ",")
+function f_get_msg(e1, e2, e3, e4, e5) {
+    return (f_tostr(e1) + "," + f_tostr(e2) + "," + f_tostr(e3) + "," + f_tostr(e4) + "," + f_tostr(e5)).replaceAll(/,,/g, ",")
 }
 
-function showToast(title, icon, duration) {
+function f_wx_show_toast(title, icon, duration) {
     wx.showToast({
         title: title,
         icon: icon != null ? icon : "loading",
@@ -67,7 +77,7 @@ function showToast(title, icon, duration) {
     })
 }
 
-function showModal( content, ocallback, ccallback) {
+function f_wx_show_modal( content, ocallback, ccallback) {
     try{
         //ok,cancel
         wx.showModal({
@@ -92,7 +102,7 @@ function showModal( content, ocallback, ccallback) {
             },
             fail:(res,a,b)=>{
                 try{
-                    showToast(res.errMsg)
+                    f_wx_show_toast(res.errMsg)
                 }catch (e){
                     err(e)
                 }
@@ -103,7 +113,65 @@ function showModal( content, ocallback, ccallback) {
     }
 }
 
-
-module.exports.static_showToast=showToast
-module.exports.static_showModal=showModal
-module.exports.static_getMsg=getMsg
+function f_wx_show_sheet(item_arr, selectedCallback, cancelcallback) {
+    const MyShowActionSheet = function (config) {
+        if (config.itemList.length > 6) {
+            var myConfig = {};
+            for (var i in config) { //for in 会遍历对象的属性，包括实例中和原型中的属性。（需要可访问，可枚举属性）
+                myConfig[i] = config[i];
+            }
+            myConfig.page = 1;
+            myConfig.itemListBak = config.itemList;
+            myConfig.itemList = [];
+            var completeFun = config.complete;
+            myConfig.complete = function (res) {
+                if (res.tapIndex == 5) {//下一页
+                    myConfig.page++;
+                    MyShowActionSheet(myConfig);
+                } else {
+                    res.tapIndex = res.tapIndex + 5 * (myConfig.page-1);
+                    completeFun(res);
+                }
+            }
+            MyShowActionSheet(myConfig);
+            return ;
+        }
+        if (!config.page) {
+            wx.showActionSheet(config);
+        }else{
+            var page = config.page;
+            var itemListBak = config.itemListBak;
+            var itemList = [];
+            for (var i = 5 * (page - 1); i < 5 * page && i < itemListBak.length; i++) {
+                itemList.push(itemListBak[i]);
+            }
+            if (5 * page < itemListBak.length) {
+                itemList.push('下一页');
+            }
+            config.itemList = itemList;
+            wx.showActionSheet(config);
+        }
+    }
+    MyShowActionSheet({
+        itemList: item_arr,//['A', 'B', 'C'],长度不能超过6,必须是字符串数组
+        complete: (res) => {
+            try {
+                if (res.errMsg.endsWith(":ok")) {
+                    this.data.mlog.info("selected", item_arr[res.tapIndex])
+                    if (typeof selectedCallback == "function") {
+                        selectedCallback(item_arr[res.tapIndex], res.tapIndex)
+                    }
+                } else {
+                    if (typeof cancelcallback == "function") {
+                        // this.data.mlog.info("not selected.")
+                        cancelcallback()
+                    }else{
+                        // this.data.mlog.err("not selected.")
+                    }
+                }
+            } catch (e) {
+                this.data.mlog.err(e)
+            }
+        }
+    })
+}

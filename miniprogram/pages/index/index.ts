@@ -5,32 +5,41 @@ const app = getApp<IAppOption>()
 Page({
     data: {
         editor: {
-            ctx: null
+            ctx: null,
+            file_name:""
         },
-        button: {
+        tree:{
+            path:"",
+            child_arr:[]//[{text,evData}]
+        },
+        tts: {
             text: "start"
         }
     },
-    onLoad() {
+    onLoad:function() {
         try {
-            console.info(app.globalData.rrmanager)
-            app.globalData.rrmanager.onRecognize = (res) => {
-                console.info("recogn...", res)
+            //init bind event
+            app.globalData.rr_manager.onRecognize = (res) => {
+                app.globalData.c_mlog.f_info("recognize...", res)
             }
-            app.globalData.rrmanager.onStop = (res) => {
+            app.globalData.rr_manager.onStop = (res) => {
                 try {
-                    // this.data.editor.ctx.setContents()
+                    app.globalData.c_mlog.f_info("stop...", res)
                     this.data.editor.ctx.insertText({text: res.result})
-                    console.info("stop...", res)
+                    //re start...
+                    if(this.data.tts.text.toUpperCase()=="STOP"){
+                        app.globalData.rr_manager.start({lang: "zh_CN", duration: 10000})
+                    }
                 } catch (e) {
-                    console.error(e)
+                    app.globalData.c_mlog.f_err(e)
                 }
             }
-            app.globalData.rrmanager.onStart = (res) => {
-                console.info("start...", res)
+            app.globalData.rr_manager.onStart = (res) => {
+                app.globalData.c_mlog.f_info("start...", res)
             }
-            app.globalData.rrmanager.onError = (res) => {
-                console.error("err...", res)
+            app.globalData.rr_manager.onError = (res) => {
+                app.globalData.c_mlog.f_err("err...", res)
+                this.f_click_tts(false)
             }
             //init editor
             if (this.data.editor.ctx == null) {
@@ -39,151 +48,185 @@ Page({
                     this.setData(this.data)
                 }).exec()
             }
-            //init file tree
-            this.data.absolutePath = app.globalData.c_mfile.static_getUserDir("write-voice-assistant")
-            app.globalData.c_mlog.info("absolutePath", this.data.absolutePath)
-            this.setData(this.data)
-            this.refushTree()
+            //refush tree
+            this.f_refush_child()
         } catch (e) {
-            console.error(e)
+            app.globalData.c_mlog.f_err(e)
         }
     },
-    f_voice_start() {
+    f_click_tts(isStop=false) {
         try {
-            if (this.data.button.text.toUpperCase() == "START") {
-                this.data.button.text = "stop"
+            if (false==isStop&&this.data.tts.text.toUpperCase() == "START") {
+                app.globalData.c_mlog.f_info("start...")
+                this.data.tts.text = "stop"
                 this.setData(this.data)
-                app.globalData.rrmanager.start({lang: "zh_CN", duration: 3000})
-                console.info("start...")
+                app.globalData.rr_manager.stop()
+                app.globalData.rr_manager.start({lang: "zh_CN", duration: 3000})
             } else {
-                this.data.button.text = "start"
+                app.globalData.c_mlog.f_info("stop...")
+                this.data.tts.text = "start"
                 this.setData(this.data)
-                app.globalData.rrmanager.stop()
-                console.info("stop...")
+                app.globalData.rr_manager.stop()
             }
         } catch (e) {
-            console.error(e)
+            app.globalData.c_mlog.f_err(e)
         }
     },
 
-    refushTree: function () {
+    f_refush_child: function (isClearEdit=false) {
         try {
-            this.data.childArr = app.globalData.c_mfile.static_readDir(this.data.absolutePath).map(childName => {
-                var childInfo = "permission"
-                const stat = app.globalData.c_mfile.static_getFInfo(this.data.absolutePath + childName)
+            //init path
+            if(this.data.tree.path==""){
+                this.data.tree.path = app.globalData.wx_file.f_static_get_user_dir("write-voice-assistant")
+            }
+
+            //refush child
+            this.data.tree.child_arr = app.globalData.wx_file.f_static_readdir(this.data.tree.path).map(dirName => {
+                var msg = "permission"
+                const stat = app.globalData.wx_file.f_static_get_stat(this.data.tree.path + dirName)
                 if (stat != null) {
                     if (stat.isDirectory()) {
-                        childInfo = "dir"
+                        msg = "d"
                     } else {
-                        childInfo = "file:" + stat.size
+                        msg = "f:" + stat.size
                     }
                 }
-                return {text: childName + ":" + childInfo, eventData: childName}
+                return {text: dirName + ":" + msg, evData: dirName}
             })
-            this.data.childArr.splice(0, 0, {text: "..", eventData: ".."})
-            this.setData(this.data)
-        } catch (e1) {
-            app.globalData.c_mlog.err(e1)
-        }
-    },
-    openFile: function (fileName) {
-        try {
-            this.data.editor.ctx.clear()
-            this.data.editor.ctx.insertText({text:app.globalData.c_mfile.static_readFile(this.data.absolutePath + fileName)})
+            //add ".." child
+            this.data.tree.child_arr.splice(0, 0, {text: "..", evData: ".."})
 
-            this.data.editFileName = fileName
-            this.setData(this.data)
-        } catch (e1) {
-            app.globalData.c_mlog.err(e1)
-        }
-    },
-    saveFile: function () {
-        try {
-            const editFilePath = this.data.absolutePath + this.data.editFileName
-            if (app.globalData.c_mfile.static_isExist(editFilePath)) {
-                app.globalData.c_mlog.static_showModal("保存?",() => {
-                    this.data.editor.ctx.getContents({
-                        success:res=>{
-                            const wcode = app.globalData.c_mfile.static_writeFile(editFilePath, res.text)
-                            if(wcode){
-                                this.data.editFileName = null
-                                this.setData(this.data)
-                                this.data.editor.ctx.clear()
-                            }
-                            app.globalData.c_mlog.static_showModal("保存文件结果：" + wcode)
-                        }
-                    })
-                }, () => {})
-            } else {
-                //not find;clear
-                this.data.editFileName = null
-                this.setData(this.data)
+            if(isClearEdit){
+                //clear editor
+                this.data.editor.file_name=""
                 this.data.editor.ctx.clear()
             }
         } catch (e1) {
-            app.globalData.c_mlog.err(e1)
+            app.globalData.c_mlog.f_err(e1)
+        }finally {
+            this.setData(this.data)
+            app.globalData.c_mlog.f_info("refush child", this.data.tree.path)
         }
     },
-    refushEditConter: function (e) {
-        this.data.editConter = e.detail.text
-        this.setData(this.data)
+    f_open_file: function (fileName) {
+        try {
+            this.data.editor.file_name=fileName
+            this.data.editor.ctx.clear()
+            this.data.editor.ctx.insertText({text:app.globalData.wx_file.f_static_readfile(this.data.tree.path + fileName)})
+        } catch (e1) {
+            app.globalData.c_mlog.f_err(e1)
+        }finally {
+            this.setData(this.data)
+            app.globalData.c_mlog.f_info("open file",this.data.tree.path,this.data.editor.file_name)
+        }
     },
-    clickChild: function (e) {
+    f_save_file: function () {
+        try {
+            app.globalData.c_mlog.f_wx_static_show_modal("保存?",() => {
+                this.data.editor.ctx.getContents({
+                    success:res=>{
+                        try{
+                            app.globalData.c_mlog.f_wx_static_show_toast("保存文件结果："
+                                + app.globalData.wx_file.f_static_writeFile(this.data.tree.path+this.data.editor.file_name, res.text))
+                            this.f_refush_child()
+                        }catch (e){
+                            app.globalData.c_mlog.f_err(e)
+                        }
+                    }
+                })
+            }, () => {})
+        } catch (e) {
+            app.globalData.c_mlog.f_err(e)
+        }
+    },
+
+    f_next: function (e) {
         try {
             const childName = e.currentTarget.dataset.event1Data1
             switch (childName) {
                 case "..":
-                    // back wxfile://usr/
-                    if (true) {
-                        const absoluteArr = this.data.absolutePath.split("/").filter((child, i) => i == 1 || child != "")
-                        this.data.absolutePath = absoluteArr.splice(0, absoluteArr.length - 1).join("/") + "/"
+                    // back...
+                    const backPath=this.data.tree.path.substr(0,this.data.tree.path.lastIndexOf("/"))+"/"
+                    if (false==app.globalData.wx_file.f_get_user_dir().endsWith(backPath)) {
+                        this.data.tree.path = backPath
                         this.setData(this.data)
-                        this.refushTree()
+                        this.f_refush_child(true)
                     } else {
-                        app.globalData.c_mlog.err("is root dir:" + this.data.absolutePath)
+                        app.globalData.c_mlog.f_err("is root dir",backPath)
                     }
                     break;
                 default:
                     // next
-                    const childPath = this.data.absolutePath + childName
-                    const stat = app.globalData.c_mfile.static_getFInfo(childPath)
-                    if (stat != null && stat.isDirectory()) {
-                        // open dir
-                        this.data.absolutePath = childPath + "/"
+                    const childPath = this.data.tree.path + childName
+                    const stat = app.globalData.wx_file.f_static_get_stat(childPath)
+                    if(stat!=null&&stat.isDirectory()){
+                        this.data.tree.path = childPath + "/"
                         this.setData(this.data)
-                        this.refushTree()
-                    } else if (stat.isFile()) {
-                        //save file
-                        if (childName == this.data.editFileName) {
-                            this.saveFile()
-                        } else {
-                            // open file
-                            const callback = () => {
-                                this.openFile(childName)
-                            }
-                            if (stat.size > 1024) {
-                                app.globalData.c_mlog.static_showModal("文件过大，任然打开?", callback, () => {
-                                })
-                            } else callback()
-                        }
+                        this.f_refush_child(true)
+                    }else{
+                        this.f_refush_child()
                     }
                     break;
             }
         } catch (e1) {
-            app.globalData.c_mlog.err(e1)
+            app.globalData.c_mlog.f_err(e1)
         }
     },
-    removeChild: function (e) {
+    f_show_menus: function (e) {
         try {
-            const fPath = this.data.absolutePath + e.currentTarget.dataset.event1Data1
-            app.globalData.c_mlog.static_showModal("确定删除 " + fPath + "?", () => {
-                if (app.globalData.c_mfile.static_rmPath(fPath)) {
-                    this.refushTree()
+            const sheet=[]
+            const childName=e.currentTarget.dataset.event1Data1
+            const childPath=this.data.tree.path+childName
+            const stat=app.globalData.wx_file.f_static_get_stat(childPath)
+            if(stat!=null){
+                sheet.push("DELETE")
+                if(stat.isDirectory()){
+                    sheet.push("NEXT")
+                }else{
+                    sheet.push("OPEN")
+                    if(childName==this.data.editor.file_name){
+                        sheet.push("SAVE")
+                    }
                 }
-            }, () => {
-            })
+            }
+            app.globalData.c_mlog.f_wx_static_show_sheet(sheet,(sval,sindex)=>{
+                try{
+                    switch (sval){
+                        case "DELETE":
+                            app.globalData.c_mlog.f_wx_static_show_modal("确定删除 " + childName + "?", () => {
+                                app.globalData.c_mlog.f_wx_static_show_toast("del is "+app.globalData.wx_file.f_static_rmpath(childPath))
+                                this.f_refush_child(true)
+                            }, () => {
+                            })
+                            break;
+                        case "SAVE":
+                            this.f_save_file()
+                            break;
+                        case "NEXT":
+                            this.data.tree.path = childPath+"/"
+                            this.setData(this.data)
+                            this.f_refush_child(true)
+                            break;
+                        case "OPEN":
+                            if (stat.size > 1024) {
+                                app.globalData.c_mlog.f_wx_static_show_modal("文件过大，任然打开?", () => {
+                                    this.f_open_file(childName)
+                                }, () => {
+                                })
+                            } else {
+                                this.f_open_file(childName)
+                            }
+                            break;
+
+                    }
+                }catch (e1){
+                    app.globalData.c_mlog.f_err(e1)
+                }
+            },()=>{})
+
+
         } catch (e1) {
-            app.globalData.c_mlog.err(e1)
+            app.globalData.c_mlog.f_err(e1)
         }
     }
 })
