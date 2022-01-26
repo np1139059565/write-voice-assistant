@@ -3,9 +3,9 @@ const mfile = require("./wx_file"),LOG_TYPES={
     INFO:"INFO"
 },MLOG_TITLE="mlog"
 
-var logType=LOG_TYPES.DEBUG
+var logType=LOG_TYPES.INFO
 
-module.exports.f_static_init = function (s_logType) {
+module.exports.f_static_init = function (s_logType=LOG_TYPES.INFO) {
     try {
         f_info("init log...")
         switch (s_logType.toUpperCase()){
@@ -22,6 +22,9 @@ module.exports.f_static_init = function (s_logType) {
     } catch (e) {
         f_err(e)
     }
+}
+module.exports.f_get_log_types=()=>{
+    return LOG_TYPES
 }
 module.exports.f_static_get_msg=f_get_msg
 
