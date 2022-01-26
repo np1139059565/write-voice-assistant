@@ -75,16 +75,16 @@ function f_err(e1, e2, e3, e4) {
 function f_mkdir(dirPath) {
     try {
         dirPath = checkAbsolutePath(dirPath)
-        const dinfo = f_get_stat(dirPath)
-        if (dinfo != null) {
-            if (dinfo.isFile()) {
+        if(f_is_exist(dirPath)){
+            const stat = f_get_stat(dirPath)
+            if (stat.isFile()) {
                 f_err("file already exists")
                 return false
             } else {
                 f_info("dir already exists")
                 return true
             }
-        } else {
+        }else {
             const code = FSM.mkdirSync(dirPath, true) == null
             f_info("mkdir", dirPath, code)
             return code
