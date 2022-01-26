@@ -38,8 +38,11 @@ Page({
                 app.globalData.c_mlog.f_info("start...", res)
             }
             app.globalData.rr_manager.onError = (res) => {
-                app.globalData.c_mlog.f_err("err...", res)
-                this.f_click_tts(null,true)
+                app.globalData.c_mlog.f_err("err...", res.msg)
+                //stop
+                if(res.msg!="please stop after start"){
+                    this.f_click_tts(null,true)
+                }
             }
             //init editor
             if (this.data.editor.ctx == null) {
@@ -60,7 +63,6 @@ Page({
                 app.globalData.c_mlog.f_info("start...")
                 this.data.tts.text = "stop"
                 this.setData(this.data)
-                app.globalData.rr_manager.stop()
                 app.globalData.rr_manager.start({lang: "zh_CN", duration: 3000})
             } else {
                 app.globalData.c_mlog.f_info("stop...")
