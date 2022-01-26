@@ -201,17 +201,14 @@ function writeFile(filePath, conter, isAppend, encoding) {
 function writeLog(title, body) {
     try {
         const tdate = new Date().toJSON()
-        const filePath = checkAbsolutePath("mlog/" + tdate.split("T")[0] + ".mlog", true)
-        //check parent path
-        const ppath = filePath.substr(0, filePath.lastIndexOf("/"))
-        if (!isDir(ppath)) {
-            FSM.mkdirSync(ppath, true)
-        }
-
         const logmsg = tdate + " " + title + ":\r\n" + body + "\r\n"
+        const filePath = checkAbsolutePath("mlog/" + tdate.split("T")[0] + ".mlog", true)
         if (f_is_exist(filePath, true)) {
             FSM.appendFileSync(filePath, logmsg, "utf-8")
         } else {
+            //check parent path
+            const ppath = filePath.substr(0, filePath.lastIndexOf("/"))
+            FSM.mkdirSync(ppath, true)
             FSM.writeFileSync(filePath, logmsg, "utf-8")
         }
     } catch (e) {
@@ -240,16 +237,19 @@ function f_get_stat(path) {
     }
 }
 
-function f_is_exist(path) {
+function f_is_exist(path,isLog=false) {
     try {
         path = checkAbsolutePath(path)
         return typeof path == "string" && FSM.accessSync(path) == null
     } catch (e) {
-        if (e.message.indexOf("no such file or directory") >= 0) {
-            f_info(path, e.message)
-        } else {
-            f_err(e)
+        if(false==isLog){
+            if (e.message.indexOf("no such file or directory") >= 0) {
+                f_info(path, e.message)
+            } else {
+                f_err(e)
+            }
         }
+
         return false
     }
 }
