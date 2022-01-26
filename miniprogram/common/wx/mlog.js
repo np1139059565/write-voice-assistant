@@ -33,20 +33,20 @@ function f_info(title=null, i2, i3, i4, i5) {
     if(title==null){
         title=MLOG_TITLE
     }
-    mfile.f_static_writeLog(title, f_get_msg(i2, i3, i4, i5))
+    mfile.f_static_writeLog(f_get_msg(title,i2, i3, i4, i5))
     if(logType==LOG_TYPES.DEBUG){
-        f_wx_show_toast(title+f_get_msg( i2, i3, i4, i5))
+        f_wx_show_toast(f_get_msg(title, i2, i3, i4, i5))
     }
-    console.info(title, f_get_msg(i1, i2, i3, i4, i5))
+    console.info(f_get_msg(title, i2, i3, i4, i5))
 }
 
 function f_err(title, e2, e3, e4, e5) {
     if(title==null){
         title=MLOG_TITLE
     }
-    mfile.f_static_writeLog(title, f_get_msg(e1, e2, e3, e4, e5))
-    f_wx_show_modal(title+f_get_msg( e2, e3, e4, e5))
-    console.error(title, f_get_msg(e1, e2, e3, e4, e5))
+    mfile.f_static_writeLog(f_get_msg(title,e2, e3, e4, e5))
+    f_wx_show_modal(f_get_msg(title, e2, e3, e4, e5))
+    console.error(f_get_msg(title,e2, e3, e4, e5))
 }
 
 function f_tostr(e) {

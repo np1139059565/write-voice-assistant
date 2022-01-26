@@ -8,10 +8,10 @@ App<IAppOption>({
     },
     onLaunch() {
         try {
-            this.globalData.c_mlog = require("miniprogram/common/wx/mlog.js")
+            this.globalData.c_mlog = require("common/wx/mlog.js")
             this.globalData.c_mlog.f_static_init()
             try {
-                this.globalData.wx_file = require("miniprogram/common/wx/wx_file.js")
+                this.globalData.wx_file = require("common/wx/wx_file.js")
                 this.globalData.wx_file.static_init(this.globalData.c_mlog)
                 //init si
                 if (this.globalData.w_si == null) {
