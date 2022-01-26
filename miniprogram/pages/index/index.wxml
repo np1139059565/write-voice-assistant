@@ -3,7 +3,7 @@
     <!--    editor-->
     <editor class="c-editor" id="i-editor"></editor>
     <!--    tts-->
-    <button bindtap="f_click_tts" style="{{tts.text.toUpperCase()!='START'?'background:green':''}}">{{tts.text}}</button>
+    <button bindtap="f_click_tts" style="{{tts.text.toUpperCase()=='START'?'background:green':''}}">{{tts.text}}</button>
     <!--    tree-->
     <view class="c-tree">
         <view class="c-absolute">absolute:{{tree.path}}</view>
