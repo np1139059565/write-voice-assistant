@@ -1,7 +1,7 @@
 //wxfile://usr
 const USER_DIR = wx.env.USER_DATA_PATH,FSM = wx.getFileSystemManager()
 
-var mlog = require("mlog.js")
+var mlog = require("./mlog")
 
 
 module.exports.f_static_init = (m_log=null) => {

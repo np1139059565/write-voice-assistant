@@ -1,4 +1,4 @@
-const mfile = require("wx_file.js"),LOG_TYPES={
+const mfile = require("./wx_file"),LOG_TYPES={
     DEBUG:"DEBUG",
     INFO:"INFO"
 },MLOG_TITLE="mlog"
