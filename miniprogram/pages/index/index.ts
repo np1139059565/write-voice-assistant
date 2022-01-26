@@ -20,11 +20,11 @@ Page({
         try {
             //init bind event
             app.globalData.rr_manager.onRecognize = (res) => {
-                app.globalData.c_mlog.f_info("recognize...", res)
+                app.globalData.c_mlog.f_info("recognize...", res.result)
             }
             app.globalData.rr_manager.onStop = (res) => {
                 try {
-                    app.globalData.c_mlog.f_info("stop...", res)
+                    app.globalData.c_mlog.f_info("stop...", res.result)
                     this.data.editor.ctx.insertText({text: res.result})
                     //re start...
                     if(this.data.tts.text.toUpperCase()=="STOP"){
@@ -39,7 +39,7 @@ Page({
             }
             app.globalData.rr_manager.onError = (res) => {
                 app.globalData.c_mlog.f_err("err...", res)
-                this.f_click_tts(null,false)
+                this.f_click_tts(null,true)
             }
             //init editor
             if (this.data.editor.ctx == null) {
