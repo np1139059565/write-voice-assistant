@@ -241,7 +241,7 @@ Page({
             this.data.editor.ctx.getContents({
                 success:res=>{
                     try{
-                        const fileName=res.text.split("\r\n")[0].trim()
+                        const fileName=res.text.split("\n")[0].trim()
                         if(fileName!=""){
                             app.globalData.c_mlog.f_wx_static_show_modal("create new file:"+fileName+"?",()=>{
                                 try{
