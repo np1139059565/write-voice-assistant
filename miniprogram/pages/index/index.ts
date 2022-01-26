@@ -78,6 +78,7 @@ Page({
             //init path
             if(this.data.tree.path==""){
                 this.data.tree.path = app.globalData.wx_file.f_static_get_user_dir("write-voice-assistant")
+                this.data.tree.path = app.globalData.wx_file.f_static_mkdir(this.data.tree.path)
             }
 
             //refush child
