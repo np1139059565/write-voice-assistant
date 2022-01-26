@@ -147,7 +147,8 @@ Page({
             switch (childName) {
                 case "..":
                     // back...
-                    const backPath=this.data.tree.path.substr(0,this.data.tree.path.lastIndexOf("/"))+"/"
+                    const backPath=this.data.tree.path.substr(0,
+                        this.data.tree.path.substr(0,this.data.tree.path.length-1).lastIndexOf("/"))+"/"
                     if (false==app.globalData.wx_file.f_static_get_user_dir().endsWith(backPath)) {
                         this.data.tree.path = backPath
                         this.setData(this.data)
