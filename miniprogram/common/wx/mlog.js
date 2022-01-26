@@ -160,20 +160,20 @@ function f_wx_show_sheet(item_arr, selectedCallback, cancelcallback) {
         complete: (res) => {
             try {
                 if (res.errMsg.endsWith(":ok")) {
-                    this.data.mlog.info("selected", item_arr[res.tapIndex])
+                    f_info("selected", item_arr[res.tapIndex])
                     if (typeof selectedCallback == "function") {
                         selectedCallback(item_arr[res.tapIndex], res.tapIndex)
                     }
                 } else {
                     if (typeof cancelcallback == "function") {
-                        // this.data.mlog.info("not selected.")
+                        // f_info("not selected.")
                         cancelcallback()
                     }else{
-                        // this.data.mlog.err("not selected.")
+                        // f_info("not selected.")
                     }
                 }
             } catch (e) {
-                this.data.mlog.err(e)
+                f_err(e)
             }
         }
     })
