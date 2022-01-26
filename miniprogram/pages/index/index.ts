@@ -127,7 +127,7 @@ Page({
                 this.data.editor.ctx.getContents({
                     success:res=>{
                         try{
-                            app.globalData.c_mlog.f_wx_static_show_toast("保存文件结果："
+                            app.globalData.c_mlog.f_wx_static_show_toast("保存结果："
                                 + app.globalData.wx_file.f_static_writeFile(this.data.tree.path+this.data.editor.file_name, res.text))
                             this.f_refush_child()
                         }catch (e){
