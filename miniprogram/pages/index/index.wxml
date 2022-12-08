@@ -1,17 +1,18 @@
 <!--index.wxml-->
-<view class="container">
-    <!--    editor-->
-    <editor class="c-editor" id="i-editor"></editor>
-    <!--    tts-->
-    <button bindtap="f_click_tts" style="{{tts.style}}">{{tts.text}}</button>
-    <!--    tree-->
-    <view class="c-tree">
-        <view class="c-absolute" catchlongpress="f_edit_to_new_file">absolute:{{tree.path}}</view>
-        <view class="c-childs">
-            <view class="c-child" wx:for="{{tree.child_arr}}"
-                  catchtap="f_next" data-event1-data1="{{item.evData}}"
-                  catchlongpress="f_show_menus">{{item.text}}
+<view class="c_container">
+    <view class="c_left" style="{{leftPart.style}}">
+        <view class="c_open" bindtap="openLeft">{{leftPart.openText}}</view>
+        <!-- tree -->
+        <view class="c_path">{{leftPart.tree.path}}</view>
+        <view class="c_childs">
+            <view catchlongpress="showMenus" data-text="{{item.text}}" class="c_child" wx:for="{{leftPart.tree.childArr}}">
+                  <view bindtap="next" data-text="{{item.text}}" wx:if="{{item.isDir}}">{{item.text}}</view>
+                  <view style="{{item.isEdit? 'background-color:green':''}}" wx:else>{{item.text}}</view>
             </view>
         </view>
     </view>
+    <!--    editor-->
+    <editor class="c-editor" id="i_editor"></editor>
+    <!--    tts-->
+    <button class="c-button" bindtap="clickTTS" style="{{tts.style}}">{{tts.text}}</button>
 </view>

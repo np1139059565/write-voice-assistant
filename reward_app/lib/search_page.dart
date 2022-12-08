@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key, required this.defText, required this.hintText});
+  const SearchPage(
+      {super.key, required this.defSearchText, required this.hintText});
 
-  final String defText;
+  final String defSearchText;
   final String hintText;
 
   @override
@@ -17,10 +18,10 @@ class _SearchPageState extends State<SearchPage> {
       appBar: AppBar(
         title: TextField(
           controller: TextEditingController.fromValue(TextEditingValue(
-              text: widget.defText,
+              text: widget.defSearchText,
               selection: TextSelection.fromPosition(TextPosition(
                   affinity: TextAffinity.downstream,
-                  offset: widget.defText.length)))),
+                  offset: widget.defSearchText.length)))),
           autofocus: true,
           decoration: InputDecoration(
             prefixIcon: Icon(

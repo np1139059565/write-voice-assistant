@@ -3,38 +3,78 @@ page, view, editor, button {
     margin: 0;
 }
 
-.container {
+.c_container {
     width: 100vw;
     height: 100vh;
-    padding: 0;
-    margin: 0;
+    overflow: hidden;
 }
 
-.c-editor {
-    height: 50vh;
-    width: calc(100% - 4px);
-    margin: 2px;
+.c_left{
+    width:calc(100% - 30px - 10px);
+    left: calc(-100% + 32px);
+    height:calc(100% - 10px - 2px);
+    padding: 5px;
+    position:absolute;
+    top: 0;
     border: 1px solid;
+    border-left:0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    z-index: 1;
+    background-color: #FFF;
 }
-
-.c-button {
-    height: 10vh;
+.c_open{
+    width: 28px;
+    right: -28px;
+    height: 50px;
+    line-height: 50px;
+    top: calc(50% - 25px);
+    text-align: center;
+    position: absolute;
+    border: 1px solid;
+    border-left:0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    z-index: 2;
+    background-color: #FFF;
 }
 
 .c-tree {
     height: 40vh;
 }
 
-.c-absolute {
+.c_path {
     width: 100%;
     overflow: auto;
 }
 
-.c-childs {
+.c_childs {
     width: 100%;
     height: 30vh;
     overflow: auto;
 }
-.c-child{
+.c_child{
     height: 5vh;
+}
+
+
+
+
+
+.c-editor {
+    height: calc(100% - 20px - 2px);
+    width: calc(100% - 20px - 2px);
+    margin-left: 10px;
+    margin-top: 10px;
+    border: 1px solid;
+    padding: 0;
+}
+
+.c-button {
+    width: 80px !important;
+    height: 30px;
+    line-height: 30px;
+    position: absolute;
+    top: calc(50% - 10px);
+    left: calc(50% - 25px);
 }
